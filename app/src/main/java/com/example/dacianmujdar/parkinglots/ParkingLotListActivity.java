@@ -1,8 +1,7 @@
 package com.example.dacianmujdar.parkinglots;
 
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
-import com.example.dacianmujdar.parkinglots.dummy.ParkingLot;
-import com.example.dacianmujdar.parkinglots.dummy.ParkingLotCollection;
+import com.example.dacianmujdar.parkinglots.dummy.Request;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +27,8 @@ import java.util.List;
  */
 public class ParkingLotListActivity extends AppCompatActivity {
 
+    private Parking data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,32 +48,32 @@ public class ParkingLotListActivity extends AppCompatActivity {
         });
         View recyclerView = findViewById(R.id.parkinglot_list);
         assert recyclerView != null;
-        Parking p = Parking.loadDataFromJson(this);
+        data = Parking.loadDataFromJson(this);
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, ParkingLotCollection.ITEMS, false));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, data.getRequests(), false));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final ParkingLotListActivity mParentActivity;
-        private final List<ParkingLot> mValues;
+        private final List<Request> mValues;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ParkingLot item = (ParkingLot) view.getTag();
+                Request item = (Request) view.getTag();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, ParkingLotDetailActivity.class);
-                intent.putExtra(ParkingLotDetailActivity.ARG_ITEM_ID, item.id);
+                intent.putExtra(ParkingLotDetailActivity.ARG_ITEM_ID, item.getId());
                 context.startActivity(intent);
             }
         };
 
         SimpleItemRecyclerViewAdapter(ParkingLotListActivity parent,
-                List<ParkingLot> items,
+                List<Request> items,
                 boolean twoPane) {
             mValues = items;
             mParentActivity = parent;
@@ -87,9 +88,9 @@ public class ParkingLotListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(Integer.toString(mValues.get(position).id));
-            holder.mContentView.setText(mValues.get(position).description);
-            holder.mNameView.setText(mValues.get(position).name);
+            holder.mIdView.setText(Integer.toString(mValues.get(position).getId()));
+            holder.mContentView.setText(mValues.get(position).getCreatedBy());
+            holder.mNameView.setText(mValues.get(position).getStatus());
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
