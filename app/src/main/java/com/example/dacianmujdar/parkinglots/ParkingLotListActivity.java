@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import java.util.List;
 /**
- * An activity representing a list of ParkingLots. This activity
+ * An activity representing a list of Requests. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
  * lead to a {@link ParkingLotDetailActivity} representing
