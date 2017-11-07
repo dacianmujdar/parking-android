@@ -40,15 +40,38 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <EditText android:id="@+id/parkinglot_detail"
-            style="?android:attr/textAppearanceLarge"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+        <LinearLayout
+            android:id="@+id/email_login_form"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="false"
-            android:padding="16dp"
-            android:textIsSelectable="true" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText android:id="@+id/parkinglot_creator"
+                style="?android:attr/textAppearanceLarge"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:padding="16dp"
+                android:textIsSelectable="true" />
+
+            <EditText android:id="@+id/parkinglot_receiver"
+                style="?android:attr/textAppearanceLarge"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:padding="16dp"
+                android:textIsSelectable="true" />
+
+            <Spinner
+                android:id="@+id/request_types_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false" />
+        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

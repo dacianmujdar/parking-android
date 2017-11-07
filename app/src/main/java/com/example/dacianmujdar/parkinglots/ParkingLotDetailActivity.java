@@ -1,7 +1,8 @@
 package com.example.dacianmujdar.parkinglots;
 
-import com.example.dacianmujdar.parkinglots.dummy.ParkingLot;
-import com.example.dacianmujdar.parkinglots.dummy.ParkingLotCollection;
+import com.example.dacianmujdar.parkinglots.dummy.Parking;
+import com.example.dacianmujdar.parkinglots.dummy.Request;
+import com.example.dacianmujdar.parkinglots.dummy.RequestType;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 /**
  * An activity representing a single ParkingLot detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -23,9 +28,11 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
 
     public static final String ARG_ITEM_ID = "DetailItem";
     private boolean is_edit_enabled = false;
-    EditText mDetailsET;
+    EditText mCreatorET;
+    EditText mReceiverET;
     FloatingActionButton mFab;
-    ParkingLot mParkingLot;
+    Request mRequest;
+    Spinner mTypeS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +41,17 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
         // Get the item id from Intent
         Intent intent = getIntent();
         int id = intent.getIntExtra(ARG_ITEM_ID, 0);
-        mParkingLot = ParkingLotCollection.getItemById(id);
+        mRequest = Parking.getInstance(this).getItemById(id);
         // set the description
-        mDetailsET = (EditText) findViewById(R.id.parkinglot_detail);
-        mDetailsET.setText(mParkingLot.description);
+        mCreatorET = (EditText) findViewById(R.id.parkinglot_creator);
+        mCreatorET.setText(mRequest.getCreatedBy());
+        mReceiverET = (EditText) findViewById(R.id.parkinglot_receiver);
+        mReceiverET.setText(mRequest.getRequestedFor());
+        mTypeS = (Spinner) findViewById(R.id.request_types_details);
+        setRequestTypeSpinner();
         // set the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        toolbar.setTitle(mParkingLot.name);
+        toolbar.setTitle(mRequest.toString());
         setSupportActionBar(toolbar);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +74,9 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
     private void enableEditMode() {
         is_edit_enabled = true;
         Toast.makeText(getApplicationContext(), "You can now edit!", Toast.LENGTH_SHORT).show();
-        mDetailsET.setEnabled(true);
+        mCreatorET.setEnabled(true);
+        mReceiverET.setEnabled(true);
+        mTypeS.setEnabled(true);
         if (mFab != null) {
             mFab.setImageResource(android.R.drawable.ic_menu_save);
         }
@@ -71,12 +84,31 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
 
     private void disableEditMode() {
         is_edit_enabled = false;
-        mDetailsET.setEnabled(false);
+        mCreatorET.setEnabled(false);
+        mTypeS.setEnabled(false);
+        mReceiverET.setEnabled(false);
         if (mFab != null) {
             mFab.setImageResource(android.R.drawable.ic_menu_edit);
         }
         //save the data to the instance
-        mParkingLot.description = mDetailsET.getText().toString();
+        mRequest.setCreatedBy(mCreatorET.getText().toString());
+        mRequest.setRequestedFor(mReceiverET.getText().toString());
+        mRequest.setType(mTypeS.getSelectedItem().toString());
+        Parking.getInstance(this).updateRequest(mRequest);
+    }
+
+    private void setRequestTypeSpinner() {
+        ArrayList<RequestType> requestTypes = Parking.getInstance(this).getRequestTypes();
+        ArrayAdapter<RequestType> spinnerAdapter = new ArrayAdapter<RequestType>(this, android.R.layout.simple_spinner_dropdown_item, requestTypes);
+        mTypeS.setAdapter(spinnerAdapter);
+        mTypeS.setEnabled(false);
+        int index = 0;
+        for (RequestType r : requestTypes) {
+            if (r.getType().equals(mRequest.getType())) {
+                index = requestTypes.indexOf(r);
+            }
+        }
+        mTypeS.setSelection(index);
     }
 
     @Override

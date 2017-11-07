@@ -87,4 +87,23 @@ public class Parking {
         request.setStatus("Pending");
         this.requests.add(request);
     }
+
+    public Request getItemById(int id) {
+        for (Request item : requests) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void updateRequest(Request request) {
+        for (Request item : requests) {
+            if (item.getId() == request.getId()) {
+                item.setType(request.getType());
+                item.setRequestedFor(request.getRequestedFor());
+                item.setCreatedBy(request.getCreatedBy());
+            }
+        }
+    }
 }
