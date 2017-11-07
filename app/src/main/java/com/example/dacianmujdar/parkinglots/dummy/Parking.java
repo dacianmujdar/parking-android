@@ -85,6 +85,7 @@ public class Parking {
         request.setRequestedFor(receiver_name);
         request.setType(type);
         request.setStatus("Pending");
+        request.setId(requests.size() + 1);
         this.requests.add(request);
     }
 
