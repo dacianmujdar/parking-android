@@ -28,6 +28,7 @@ import java.util.List;
 public class ParkingLotListActivity extends AppCompatActivity {
 
     private Parking data;
+    private SimpleItemRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +49,19 @@ public class ParkingLotListActivity extends AppCompatActivity {
         });
         View recyclerView = findViewById(R.id.parkinglot_list);
         assert recyclerView != null;
-        data = Parking.loadDataFromJson(this);
+        data = Parking.getInstance(this);
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, data.getRequests(), false));
+        adapter = new SimpleItemRecyclerViewAdapter(this, data.getRequests(), false);
+        recyclerView.setAdapter(adapter);
     }
 
     public static class SimpleItemRecyclerViewAdapter

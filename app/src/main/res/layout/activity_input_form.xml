@@ -50,10 +50,10 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/first_name"
+                    android:id="@+id/creator_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_first_name"
+                    android:hint="@string/prompt_receiver"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -65,30 +65,20 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/last_name"
+                    android:id="@+id/receiver_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_last_name"
+                    android:hint="@string/prompt_creator"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <Spinner
+                android:id="@+id/request_types"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <AutoCompleteTextView
-                    android:id="@+id/message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_message"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/email_send_email_button"
@@ -96,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_send_email"
+                android:text="@string/action_create_request"
                 android:textStyle="bold" />
 
         </LinearLayout>

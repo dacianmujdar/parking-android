@@ -9,6 +9,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 public class Parking {
 
+    private Parking() {
+    }
+
+    private static Parking mParking;
+
+    public static Parking getInstance(Activity activity) {
+        if (mParking == null) {
+            mParking = loadDataFromJson(activity);
+        }
+        return mParking;
+    }
+
     private ArrayList<String> status;
 
     public ArrayList<String> getStatus() {
@@ -49,7 +61,7 @@ public class Parking {
         this.users = users;
     }
 
-    public static Parking loadDataFromJson(Activity activity) {
+    private static Parking loadDataFromJson(Activity activity) {
         String json = null;
         try {
             InputStream is = activity.getAssets().open("data.json");
@@ -65,5 +77,14 @@ public class Parking {
         Gson gson = new Gson();
         Parking parking = gson.fromJson(json, Parking.class);
         return parking;
+    }
+
+    public void addNewRequest(String creator_name, String receiver_name, String type) {
+        Request request = new Request();
+        request.setCreatedBy(creator_name);
+        request.setRequestedFor(receiver_name);
+        request.setType(type);
+        request.setStatus("Pending");
+        this.requests.add(request);
     }
 }
