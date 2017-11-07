@@ -88,9 +88,10 @@ public class ParkingLotListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(Integer.toString(mValues.get(position).getId()));
-            holder.mContentView.setText(mValues.get(position).getCreatedBy());
-            holder.mNameView.setText(mValues.get(position).getStatus());
+            holder.mTypeView.setText(mValues.get(position).getType());
+            holder.mStatusView.setText(mValues.get(position).getStatus());
+            holder.mCreatedByView.setText(mValues.get(position).getCreatedBy());
+            holder.mRequestedForView.setText(mValues.get(position).getRequestedFor());
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -102,15 +103,17 @@ public class ParkingLotListActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
-            final TextView mIdView;
-            final TextView mContentView;
-            final TextView mNameView;
+            final TextView mTypeView;
+            final TextView mStatusView;
+            final TextView mCreatedByView;
+            final TextView mRequestedForView;
 
             ViewHolder(View view) {
                 super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mNameView = (TextView) view.findViewById(R.id.name);
-                mContentView = (TextView) view.findViewById(R.id.description);
+                mTypeView = (TextView) view.findViewById(R.id.type);
+                mStatusView = (TextView) view.findViewById(R.id.status);
+                mCreatedByView = (TextView) view.findViewById(R.id.createdby);
+                mRequestedForView = (TextView) view.findViewById(R.id.createdfor);
             }
         }
     }
