@@ -3,11 +3,15 @@ package com.example.dacianmujdar.parkinglots.dummy;
 import com.google.gson.Gson;
 
 import android.app.Activity;
+import android.content.Context;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 public class Parking {
+
+    private static final String FILENAME = "data.json";
 
     private Parking() {
     }
@@ -64,7 +68,7 @@ public class Parking {
     private static Parking loadDataFromJson(Activity activity) {
         String json = null;
         try {
-            InputStream is = activity.getAssets().open("data.json");
+            InputStream is = activity.getAssets().open(FILENAME);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -77,6 +81,20 @@ public class Parking {
         Gson gson = new Gson();
         Parking parking = gson.fromJson(json, Parking.class);
         return parking;
+    }
+
+    public static void storeDataIntoPersistance(Activity act) {
+        // convert the current parking object into json string
+        Gson gson = new Gson();
+        String parkingAsJson = gson.toJson(mParking);
+        try {
+            // store json into the same file
+            FileOutputStream fos = act.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            fos.write(parkingAsJson.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addNewRequest(String creator_name, String receiver_name, String type) {

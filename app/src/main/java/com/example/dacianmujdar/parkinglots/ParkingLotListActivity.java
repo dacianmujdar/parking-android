@@ -86,6 +86,12 @@ public class ParkingLotListActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Parking.storeDataIntoPersistance(this);
+    }
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         adapter = new SimpleItemRecyclerViewAdapter(this, data.getRequests(), false);
         recyclerView.setAdapter(adapter);

@@ -87,4 +87,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="delete_string">Delete request</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Log In</string>
 </resources>
