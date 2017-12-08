@@ -88,24 +88,25 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
         //pieChart.setCenterTextColor(Color.BLACK);
         mPieChart.setHoleRadius(25f);
         mPieChart.setTransparentCircleAlpha(0);
-        mPieChart.setCenterText("Super Cool Chart");
         mPieChart.setCenterTextSize(10);
         addDataSet(mPieChart);
+        mPieChart.setDrawSliceText(false);
+        mPieChart.getDescription().setEnabled(false);
     }
 
     private void addDataSet(PieChart pieChart) {
-        float[] yData = {25.3f, 10.6f, 66.76f, 44.32f, 46.01f, 16.89f, 23.9f};
-        String[] xData = {"Mitch", "Jessica", "Mohammad", "Kelsey", "Sam", "Robert", "Ashley"};
+        int[] yData = Parking.getInstance(this).getRequestsStats();
+        String[] xData = {"Parking Spot Rental", "Parking Spot Reservation", "Parking Subscription", "Cancel Subscription", "Cancel Reservation", "Quit Rental", "Drop out registration"};
         ArrayList<PieEntry> yEntrys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<>();
         for (int i = 0; i < yData.length; i++) {
-            yEntrys.add(new PieEntry(yData[i], i));
+            yEntrys.add(new PieEntry(yData[i], xData[i]));
         }
         for (int i = 1; i < xData.length; i++) {
             xEntrys.add(xData[i]);
         }
         //create the data set
-        PieDataSet pieDataSet = new PieDataSet(yEntrys, "Employee Sales");
+        PieDataSet pieDataSet = new PieDataSet(yEntrys, "Parking request types");
         pieDataSet.setSliceSpace(2);
         pieDataSet.setValueTextSize(12);
         //add colors to dataset
@@ -120,8 +121,8 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
         pieDataSet.setColors(colors);
         //add legend to chart
         Legend legend = pieChart.getLegend();
-        legend.setForm(Legend.LegendForm.CIRCLE);
-        legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
+        legend.setForm(Legend.LegendForm.DEFAULT);
+        legend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
         //create pie data object
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);

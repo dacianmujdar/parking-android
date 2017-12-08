@@ -157,4 +157,34 @@ public class Parking {
         } catch (Exception ex) {
         }
     }
+
+    public int[] getRequestsStats() {
+        int[] x = {0, 0, 0, 0, 0, 0, 0};
+        for (Request item : requests) {
+            switch (item.getType()) {
+                case "Parking Spot Rental":
+                    x[0]++;
+                    break;
+                case "Parking Spot Reservation":
+                    x[1]++;
+                    break;
+                case "Parking Subscription":
+                    x[2]++;
+                    break;
+                case "Cancel Subscription":
+                    x[3]++;
+                    break;
+                case "Cancel Reservation":
+                    x[4]++;
+                    break;
+                case "Quit Rental":
+                    x[5]++;
+                    break;
+                case "Drop out registration":
+                    x[6]++;
+                    break;
+            }
+        }
+        return x;
+    }
 }
