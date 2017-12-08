@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
         assert recyclerView != null;
         data = Parking.getInstance(this);
         setupRecyclerView((RecyclerView) recyclerView);
-        registerForContextMenu(recyclerView);
+        registerForContextMenu((RecyclerView) recyclerView);
     }
 
     @Override
@@ -71,7 +70,10 @@ public class ParkingLotListActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_item:
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                Request request = adapter.getCurrentItem();
+                if (request != null) {
+                    data.removeRequest(request);
+                }
                 this.adapter.notifyDataSetChanged();
                 return true;
         }
@@ -94,6 +96,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
 
         private final ParkingLotListActivity mParentActivity;
         private final List<Request> mValues;
+        private Request mCurrentItem;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,6 +107,17 @@ public class ParkingLotListActivity extends AppCompatActivity {
                 context.startActivity(intent);
             }
         };
+        private final View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mCurrentItem = (Request) view.getTag();
+                return true;
+            }
+        };
+
+        public Request getCurrentItem() {
+            return mCurrentItem;
+        }
 
         SimpleItemRecyclerViewAdapter(ParkingLotListActivity parent,
                 List<Request> items,
@@ -127,6 +141,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
             holder.mRequestedForView.setText(mValues.get(position).getRequestedFor());
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
+            //holder.itemView.setOnLongClickListener(mOnLongClickListener);
         }
 
         @Override
@@ -153,7 +168,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
             @Override
             public void onCreateContextMenu(ContextMenu menu, View v,
                     ContextMenu.ContextMenuInfo menuInfo) {
-                //menuInfo is null
+                mCurrentItem = (Request) v.getTag();
             }
         }
     }

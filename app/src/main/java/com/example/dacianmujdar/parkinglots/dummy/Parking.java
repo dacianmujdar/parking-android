@@ -107,4 +107,11 @@ public class Parking {
             }
         }
     }
+
+    public void removeRequest(Request request) {
+        try {
+            mParking.requests.remove(request);
+        } catch (Exception ex) {
+        }
+    }
 }
