@@ -11,9 +11,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -51,6 +55,27 @@ public class ParkingLotListActivity extends AppCompatActivity {
         assert recyclerView != null;
         data = Parking.getInstance(this);
         setupRecyclerView((RecyclerView) recyclerView);
+        registerForContextMenu(recyclerView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenu.ContextMenuInfo menuInfo) {
+        // TODO Auto-generated method stub
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater m = getMenuInflater();
+        m.inflate(R.menu.delete_request, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_item:
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                this.adapter.notifyDataSetChanged();
+                return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -109,7 +134,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
             final TextView mTypeView;
             final TextView mStatusView;
@@ -122,6 +147,13 @@ public class ParkingLotListActivity extends AppCompatActivity {
                 mStatusView = (TextView) view.findViewById(R.id.status);
                 mCreatedByView = (TextView) view.findViewById(R.id.createdby);
                 mRequestedForView = (TextView) view.findViewById(R.id.createdfor);
+                view.setOnCreateContextMenuListener(this);
+            }
+
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v,
+                    ContextMenu.ContextMenuInfo menuInfo) {
+                //menuInfo is null
             }
         }
     }
