@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import android.app.Activity;
 import android.content.Context;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +22,11 @@ public class Parking {
 
     public static Parking getInstance(Activity activity) {
         if (mParking == null) {
-            mParking = loadDataFromJson(activity);
+            retrieveDataFromPersistance(activity);
+            // at file is empty, we load the data from assets
+            if (mParking == null) {
+                mParking = loadDataFromJson(activity);
+            }
         }
         return mParking;
     }
@@ -92,6 +98,25 @@ public class Parking {
             FileOutputStream fos = act.openFileOutput(FILENAME, Context.MODE_PRIVATE);
             fos.write(parkingAsJson.getBytes());
             fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void retrieveDataFromPersistance(Activity act) {
+        try {
+            FileInputStream fin = act.openFileInput(FILENAME);
+            int c;
+            String json = "";
+            while ((c = fin.read()) != -1) {
+                json = json + Character.toString((char) c);
+            }
+            fin.close();
+            Gson gson = new Gson();
+            Parking parking = gson.fromJson(json, Parking.class);
+            mParking = parking;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
