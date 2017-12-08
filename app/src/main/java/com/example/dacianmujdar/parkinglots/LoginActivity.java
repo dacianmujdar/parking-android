@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     private void initUsers() {
         // TO DO: read these from persistance
         users = new HashMap<String, String>();
+        users.put("user", "pass");
         users.put("user1", "pass1");
         users.put("user2", "pass2");
         users.put("user3", "pass3");
