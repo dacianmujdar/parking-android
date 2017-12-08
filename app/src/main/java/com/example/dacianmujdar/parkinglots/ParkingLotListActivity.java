@@ -57,6 +57,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
         registerForContextMenu((RecyclerView) recyclerView);
     }
 
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenu.ContextMenuInfo menuInfo) {

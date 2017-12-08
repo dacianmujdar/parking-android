@@ -3,8 +3,14 @@ package com.example.dacianmujdar.parkinglots;
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
 import com.example.dacianmujdar.parkinglots.dummy.Request;
 import com.example.dacianmujdar.parkinglots.dummy.RequestType;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -33,6 +39,7 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
     FloatingActionButton mFab;
     Request mRequest;
     Spinner mTypeS;
+    PieChart mPieChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,56 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        initializePieChart();
+    }
+
+    private void initializePieChart() {
+        mPieChart = (PieChart) findViewById(R.id.chart);
+        mPieChart.setCenterText("Request types");
+        mPieChart.setRotationEnabled(true);
+        //pieChart.setUsePercentValues(true);
+        //pieChart.setHoleColor(Color.BLUE);
+        //pieChart.setCenterTextColor(Color.BLACK);
+        mPieChart.setHoleRadius(25f);
+        mPieChart.setTransparentCircleAlpha(0);
+        mPieChart.setCenterText("Super Cool Chart");
+        mPieChart.setCenterTextSize(10);
+        addDataSet(mPieChart);
+    }
+
+    private void addDataSet(PieChart pieChart) {
+        float[] yData = {25.3f, 10.6f, 66.76f, 44.32f, 46.01f, 16.89f, 23.9f};
+        String[] xData = {"Mitch", "Jessica", "Mohammad", "Kelsey", "Sam", "Robert", "Ashley"};
+        ArrayList<PieEntry> yEntrys = new ArrayList<>();
+        ArrayList<String> xEntrys = new ArrayList<>();
+        for (int i = 0; i < yData.length; i++) {
+            yEntrys.add(new PieEntry(yData[i], i));
+        }
+        for (int i = 1; i < xData.length; i++) {
+            xEntrys.add(xData[i]);
+        }
+        //create the data set
+        PieDataSet pieDataSet = new PieDataSet(yEntrys, "Employee Sales");
+        pieDataSet.setSliceSpace(2);
+        pieDataSet.setValueTextSize(12);
+        //add colors to dataset
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(Color.GRAY);
+        colors.add(Color.BLUE);
+        colors.add(Color.RED);
+        colors.add(Color.GREEN);
+        colors.add(Color.CYAN);
+        colors.add(Color.YELLOW);
+        colors.add(Color.MAGENTA);
+        pieDataSet.setColors(colors);
+        //add legend to chart
+        Legend legend = pieChart.getLegend();
+        legend.setForm(Legend.LegendForm.CIRCLE);
+        legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
+        //create pie data object
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
     }
 
     private void enableEditMode() {
