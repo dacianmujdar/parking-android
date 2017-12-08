@@ -23,9 +23,9 @@ public class Parking {
     public static Parking getInstance(Activity activity) {
         if (mParking == null) {
             retrieveDataFromPersistance(activity);
-            // at file is empty, we load the data from assets
+            // if file is empty (at first run or after clear cache), we load the data from assets
             if (mParking == null) {
-                mParking = loadDataFromJson(activity);
+                mParking = loadDataFromAssets(activity);
             }
         }
         return mParking;
@@ -71,7 +71,7 @@ public class Parking {
         this.users = users;
     }
 
-    private static Parking loadDataFromJson(Activity activity) {
+    private static Parking loadDataFromAssets(Activity activity) {
         String json = null;
         try {
             InputStream is = activity.getAssets().open(FILENAME);
