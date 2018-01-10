@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import android.app.Activity;
 import android.content.Context;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +23,9 @@ public class Parking {
 
     public static Parking getInstance(Activity activity) {
         if (mParking == null) {
+//            if (Utils.isNetworkConnected(activity)) {
+//                mParking = Network.getDataFromAPI(activity);
+//            }
             retrieveDataFromPersistance(activity);
             // if file is empty (at first run or after clear cache), we load the data from assets
             if (mParking == null) {
@@ -72,6 +76,7 @@ public class Parking {
     }
 
     private static Parking loadDataFromAssets(Activity activity) {
+        Toast.makeText(activity, "Loading data from assets", Toast.LENGTH_LONG);
         String json = null;
         try {
             InputStream is = activity.getAssets().open(FILENAME);

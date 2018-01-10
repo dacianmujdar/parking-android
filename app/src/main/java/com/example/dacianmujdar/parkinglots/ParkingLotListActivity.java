@@ -1,5 +1,10 @@
 package com.example.dacianmujdar.parkinglots;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
 import com.example.dacianmujdar.parkinglots.dummy.Request;
 
@@ -18,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 /**
@@ -53,10 +59,32 @@ public class ParkingLotListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.parkinglot_list);
         assert recyclerView != null;
         data = Parking.getInstance(this);
+        getDataFromAPI();
         setupRecyclerView((RecyclerView) recyclerView);
         registerForContextMenu((RecyclerView) recyclerView);
     }
 
+    private void getDataFromAPI() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, Network.URL + "parking/",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(final String response) {
+                        ParkingLotListActivity.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(ParkingLotListActivity.this, response, Toast.LENGTH_LONG);
+                            }
+                        });
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error = error;
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
@@ -112,13 +140,6 @@ public class ParkingLotListActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, ParkingLotDetailActivity.class);
                 intent.putExtra(ParkingLotDetailActivity.ARG_ITEM_ID, item.getId());
                 context.startActivity(intent);
-            }
-        };
-        private final View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mCurrentItem = (Request) view.getTag();
-                return true;
             }
         };
 
