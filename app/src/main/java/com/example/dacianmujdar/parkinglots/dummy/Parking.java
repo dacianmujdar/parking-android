@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ public class Parking {
         return mParking;
     }
 
+    private int id;
     private ArrayList<String> status;
 
     public ArrayList<String> getStatus() {
@@ -191,5 +193,15 @@ public class Parking {
             }
         }
         return x;
+    }
+
+    public static void updateDataAfterAPIRequest(String response) {
+        try {
+            Gson gson = new Gson();
+            Parking[] parkings = gson.fromJson(response, Parking[].class);
+            mParking = parkings[0];
+        } catch (Exception ex) {
+            Log.e("log3=", ex.toString());
+        }
     }
 }

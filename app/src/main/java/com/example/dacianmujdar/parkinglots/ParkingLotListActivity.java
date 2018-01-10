@@ -16,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -23,8 +24,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * An activity representing a list of Requests. This activity
@@ -37,6 +38,7 @@ import java.util.List;
 public class ParkingLotListActivity extends AppCompatActivity {
 
     private Parking data;
+    private ArrayList<Request> requests;
     private SimpleItemRecyclerViewAdapter adapter;
 
     @Override
@@ -59,6 +61,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.parkinglot_list);
         assert recyclerView != null;
         data = Parking.getInstance(this);
+        requests = data.getRequests();
         getDataFromAPI();
         setupRecyclerView((RecyclerView) recyclerView);
         registerForContextMenu((RecyclerView) recyclerView);
@@ -70,11 +73,14 @@ public class ParkingLotListActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String response) {
-                        ParkingLotListActivity.this.runOnUiThread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(ParkingLotListActivity.this, response, Toast.LENGTH_LONG);
-                            }
-                        });
+                        Log.d("logr=", response);
+                        Parking.updateDataAfterAPIRequest(response);
+                        data = null;
+                        requests.clear();
+                        adapter.notifyDataSetChanged();
+                        data = Parking.getInstance(ParkingLotListActivity.this);
+                        requests.addAll(data.getRequests());
+                        adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -122,7 +128,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        adapter = new SimpleItemRecyclerViewAdapter(this, data.getRequests(), false);
+        adapter = new SimpleItemRecyclerViewAdapter(this, requests, false);
         recyclerView.setAdapter(adapter);
     }
 
