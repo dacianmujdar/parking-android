@@ -1,5 +1,12 @@
 package com.example.dacianmujdar.parkinglots;
 
+import com.google.gson.Gson;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
 import com.example.dacianmujdar.parkinglots.dummy.Request;
 import com.example.dacianmujdar.parkinglots.dummy.RequestType;
@@ -16,6 +23,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,6 +32,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * An activity representing a single ParkingLot detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -148,11 +158,46 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
         if (mFab != null) {
             mFab.setImageResource(android.R.drawable.ic_menu_edit);
         }
-        //save the data to the instance
-        mRequest.setCreatedBy(mCreatorET.getText().toString());
-        mRequest.setRequestedFor(mReceiverET.getText().toString());
-        mRequest.setType(mTypeS.getSelectedItem().toString());
-        Parking.getInstance(this).updateRequest(mRequest);
+        updateRequestonAPI();
+    }
+
+    private void updateRequestonAPI() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest putRequest = new StringRequest(com.android.volley.Request.Method.PATCH, Network.URL + "requests/" + mRequest.getId() + "/",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        //save the data to the instance
+                        Gson gson = new Gson();
+                        mRequest = gson.fromJson(response, com.example.dacianmujdar.parkinglots.dummy.Request.class);
+                        Parking.getInstance(ParkingLotDetailActivity.this).updateRequest(mRequest);
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        String er = error.networkResponse.data.toString();
+                        Toast.makeText(ParkingLotDetailActivity.this, "A network error occured " + er, Toast.LENGTH_LONG).show();
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("requestedFor", mReceiverET.getText().toString());
+                params.put("createdBy", mCreatorET.getText().toString());
+                if (mTypeS.getSelectedItem() != null) {
+                    params.put("type", mTypeS.getSelectedItem().toString());
+                } else {
+                    params.put("type", Constants.TYPE_DEFAULT);
+                }
+                return params;
+            }
+        };
+        queue.add(putRequest);
     }
 
     private void setRequestTypeSpinner() {
