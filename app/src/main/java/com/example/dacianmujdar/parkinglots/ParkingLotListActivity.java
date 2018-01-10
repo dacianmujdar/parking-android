@@ -75,21 +75,47 @@ public class ParkingLotListActivity extends AppCompatActivity {
                     public void onResponse(final String response) {
                         Log.d("logr=", response);
                         Parking.updateDataAfterAPIRequest(response);
-                        data = null;
-                        requests.clear();
-                        adapter.notifyDataSetChanged();
-                        data = Parking.getInstance(ParkingLotListActivity.this);
-                        requests.addAll(data.getRequests());
-                        adapter.notifyDataSetChanged();
+                        refreshDataOnAdapter();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error = error;
             }
         });
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    // refresh adapter when new data is available
+    private void refreshDataOnAdapter() {
+        data = null;
+        requests.clear();
+        adapter.notifyDataSetChanged();
+        data = Parking.getInstance(ParkingLotListActivity.this);
+        requests.addAll(data.getRequests());
+        adapter.notifyDataSetChanged();
+    }
+
+    private void removeRequest(final Request request) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest dr = new StringRequest(com.android.volley.Request.Method.DELETE, Network.URL + "/requests/" + request
+                .getId(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        data.removeRequest(request);
+                        refreshDataOnAdapter();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error.
+                    }
+                }
+        );
+        queue.add(dr);
     }
 
     @Override
@@ -107,7 +133,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
             case R.id.delete_item:
                 Request request = adapter.getCurrentItem();
                 if (request != null) {
-                    data.removeRequest(request);
+                    removeRequest(request);
                 }
                 this.adapter.notifyDataSetChanged();
                 return true;
