@@ -129,11 +129,7 @@ public class Parking {
         }
     }
 
-    public void addNewRequest(String creator_name, String receiver_name, String type) {
-        Request request = new Request();
-        request.setCreatedBy(creator_name);
-        request.setRequestedFor(receiver_name);
-        request.setType(type);
+    public void addNewRequest(Request request) {
         request.setStatus("Pending");
         request.setId(requests.size() + 1);
         this.requests.add(request);
