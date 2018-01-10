@@ -37,6 +37,12 @@ public class Parking {
     }
 
     private int id;
+    private boolean is_administrator;
+
+    public boolean get_is_administrator() {
+        return is_administrator;
+    }
+
     private ArrayList<String> status;
 
     public ArrayList<String> getStatus() {

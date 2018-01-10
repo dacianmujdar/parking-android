@@ -86,7 +86,11 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        initializePieChart();
+        if (Parking.getInstance(this).get_is_administrator()) {
+            initializePieChart();
+        } else {
+            Toast.makeText(this, "Sorry! You are not an admin so you can't see the charts", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initializePieChart() {
