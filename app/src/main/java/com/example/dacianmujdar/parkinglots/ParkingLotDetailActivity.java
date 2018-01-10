@@ -2,11 +2,13 @@ package com.example.dacianmujdar.parkinglots;
 
 import com.google.gson.Gson;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dacianmujdar.parkinglots.dummy.OAuth;
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
 import com.example.dacianmujdar.parkinglots.dummy.Request;
 import com.example.dacianmujdar.parkinglots.dummy.RequestType;
@@ -199,6 +201,15 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
                     params.put("type", Constants.TYPE_DEFAULT);
                 }
                 return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                ;
+                // add headers <key,value>
+                headers.put("Authorization", "Bearer " + OAuth.get_token());
+                return headers;
             }
         };
         queue.add(putRequest);

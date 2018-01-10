@@ -1,10 +1,12 @@
 package com.example.dacianmujdar.parkinglots;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dacianmujdar.parkinglots.dummy.OAuth;
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
 import com.example.dacianmujdar.parkinglots.dummy.Request;
 
@@ -24,9 +26,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  * An activity representing a list of Requests. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -75,13 +80,27 @@ public class ParkingLotListActivity extends AppCompatActivity {
                     public void onResponse(final String response) {
                         Log.d("logr=", response);
                         Parking.updateDataAfterAPIRequest(response);
+                        if (Parking.getInstance(ParkingLotListActivity.this).get_is_administrator()) {
+                            Toast.makeText(ParkingLotListActivity.this, "Welcome! You have administrator rights!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(ParkingLotListActivity.this, "Welcome! You don't have administrator rights so you can access all features!", Toast.LENGTH_LONG).show();
+                        }
                         refreshDataOnAdapter();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                ;
+                // add headers <key,value>
+                headers.put("Authorization", "Bearer " + OAuth.get_token());
+                return headers;
+            }
+        };
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
@@ -114,7 +133,16 @@ public class ParkingLotListActivity extends AppCompatActivity {
                         // error.
                     }
                 }
-        );
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                ;
+                // add headers <key,value>
+                headers.put("Authorization", "Bearer " + OAuth.get_token());
+                return headers;
+            }
+        };
         queue.add(dr);
     }
 

@@ -2,12 +2,14 @@ package com.example.dacianmujdar.parkinglots;
 
 import com.google.gson.Gson;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dacianmujdar.parkinglots.dummy.OAuth;
 import com.example.dacianmujdar.parkinglots.dummy.Parking;
 import com.example.dacianmujdar.parkinglots.dummy.RequestType;
 
@@ -55,7 +57,7 @@ public class InputFormActivity extends AppCompatActivity {
         final String creator_name = mCreatorNameET.getText().toString();
         final String receiver_name = mReceiverNameET.getText().toString();
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest postRequest = new StringRequest(Request.Method.POST, Network.URL + "/requests/",
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Network.URL + "requests/",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -90,8 +92,16 @@ public class InputFormActivity extends AppCompatActivity {
                 params.put("reservationRequestedAt", Constants.RESERVATION_REQUESTED_AT_DEFAULT);
                 params.put("rentalRequestedAt", Constants.RENTAL_REQUESTED_AT_DEFAULT);
                 params.put("parkingNo", Constants.PARKING_NO_DEFAULT);
-                params.put("parking", Constants.PARKING_DEFAULT);
                 return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                ;
+                // add headers <key,value>
+                headers.put("Authorization", "Bearer " + OAuth.get_token());
+                return headers;
             }
         };
         queue.add(postRequest);
