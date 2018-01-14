@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots.dummy;
+package com.android.app.parkinglots.dummy;
 
 public class User {
 

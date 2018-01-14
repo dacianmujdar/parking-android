@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots;
+package com.android.app.parkinglots;
 
 /**
  * Created by dacianmujdar on 1/10/18.

@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots;
+package com.android.app.parkinglots;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -6,9 +6,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.dacianmujdar.parkinglots.dummy.OAuth;
-import com.example.dacianmujdar.parkinglots.dummy.Parking;
-import com.example.dacianmujdar.parkinglots.dummy.Request;
+import com.android.app.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.Parking;
+import com.android.app.parkinglots.dummy.Request;
 
 import android.content.Context;
 import android.content.Intent;
@@ -71,6 +71,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
         registerForContextMenu((RecyclerView) recyclerView);
     }
+
 
     private void getDataFromAPI() {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -172,7 +173,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        refreshDataOnAdapter();
     }
 
     @Override
@@ -224,7 +225,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mTypeView.setText(mValues.get(position).getType());
-            holder.mStatusView.setText(mValues.get(position).getStatus());
+            holder.mStatusView.setText(mValues.get(position).getRentalRequestedAt());
             holder.mCreatedByView.setText(mValues.get(position).getCreatedBy());
             holder.mRequestedForView.setText(mValues.get(position).getRequestedFor());
             holder.itemView.setTag(mValues.get(position));

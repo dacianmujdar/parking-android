@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots;
+package com.android.app.parkinglots;
 
 import com.google.gson.Gson;
 
@@ -9,12 +9,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.dacianmujdar.parkinglots.dummy.OAuth;
-import com.example.dacianmujdar.parkinglots.dummy.Parking;
-import com.example.dacianmujdar.parkinglots.dummy.RequestType;
+import com.android.app.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.Parking;
+import com.android.app.parkinglots.dummy.RequestType;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -64,7 +67,7 @@ public class InputFormActivity extends AppCompatActivity {
                         // response
                         Log.d("Response", response);
                         Gson gson = new Gson();
-                        com.example.dacianmujdar.parkinglots.dummy.Request request = gson.fromJson(response, com.example.dacianmujdar.parkinglots.dummy.Request.class);
+                        com.android.app.parkinglots.dummy.Request request = gson.fromJson(response, com.android.app.parkinglots.dummy.Request.class);
                         sendEmailTask(request);
                     }
                 },
@@ -113,20 +116,44 @@ public class InputFormActivity extends AppCompatActivity {
         mTypeS.setAdapter(spinnerAdapter);
     }
 
-    private void sendEmailTask(com.example.dacianmujdar.parkinglots.dummy.Request request) {
-        String email = mEmailET.getText().toString();
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-        i.putExtra(Intent.EXTRA_SUBJECT, request.getCreatedBy() + " invited you to park!"); // move this to constants
-        // TO DO - build the actual body of the email
-        i.putExtra(Intent.EXTRA_TEXT, "Hello, " + request.getRequestedFor() + "!");
-        try {
-            startActivity(Intent.createChooser(i, "Send mail..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(InputFormActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+    private void sendEmailTask(final com.android.app.parkinglots.dummy.Request request) {
+        final String email = mEmailET.getText().toString();
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(InputFormActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(InputFormActivity.this);
         }
-        Parking.getInstance(this).addNewRequest(request);
+        builder.setTitle("Create request")
+                .setMessage("Do you want to email this request?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // send email( intent)
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        i.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+                        i.putExtra(Intent.EXTRA_SUBJECT, request.getCreatedBy() + " invited you to park!"); // move this to constants
+                        // TO DO - build the actual body of the email
+                        i.putExtra(Intent.EXTRA_TEXT, "Hello, " + request.getRequestedFor() + "!");
+                        try {
+                            startActivity(Intent.createChooser(i, "Send mail..."));
+                            Toast.makeText(InputFormActivity.this, "Request sent", Toast.LENGTH_SHORT).show();
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            //quick little message for the user
+                            Toast.makeText(InputFormActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        Toast.makeText(InputFormActivity.this, "Request created", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots;
+package com.android.app.parkinglots;
 
 import com.google.gson.Gson;
 
@@ -7,7 +7,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.dacianmujdar.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.OAuth;
 
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
                 performLogIn(view);
             }
         });
-        initUsers();
     }
 
     private void performLogIn(final View view) {
@@ -56,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                         // response
                         //save the data to the instance
                         Gson gson = new Gson();
-                        OAuth auth_info = gson.fromJson(response, com.example.dacianmujdar.parkinglots.dummy.OAuth.class);
+                        OAuth auth_info = gson.fromJson(response, com.android.app.parkinglots.dummy.OAuth.class);
                         OAuth.set_token(auth_info.getAccessToken());
                         Log.d("Response", response);
                         // go to main activity
@@ -94,14 +93,4 @@ public class LoginActivity extends AppCompatActivity {
         return users.containsKey(email) && users.get(email).equals(pass);
     }
 
-    private void initUsers() {
-        // TO DO: read these from persistance
-        users = new HashMap<String, String>();
-        users.put("user", "pass");
-        users.put("user1", "pass1");
-        users.put("user2", "pass2");
-        users.put("user3", "pass3");
-        users.put("user4", "pass4");
-    }
 }
-

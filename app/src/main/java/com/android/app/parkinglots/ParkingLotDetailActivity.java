@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots;
+package com.android.app.parkinglots;
 
 import com.google.gson.Gson;
 
@@ -8,10 +8,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.dacianmujdar.parkinglots.dummy.OAuth;
-import com.example.dacianmujdar.parkinglots.dummy.Parking;
-import com.example.dacianmujdar.parkinglots.dummy.Request;
-import com.example.dacianmujdar.parkinglots.dummy.RequestType;
+import com.android.app.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.Parking;
+import com.android.app.parkinglots.dummy.Request;
+import com.android.app.parkinglots.dummy.RequestType;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -176,7 +176,7 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
                         // response
                         //save the data to the instance
                         Gson gson = new Gson();
-                        mRequest = gson.fromJson(response, com.example.dacianmujdar.parkinglots.dummy.Request.class);
+                        mRequest = gson.fromJson(response, com.android.app.parkinglots.dummy.Request.class);
                         Parking.getInstance(ParkingLotDetailActivity.this).updateRequest(mRequest);
                         Log.d("Response", response);
                     }

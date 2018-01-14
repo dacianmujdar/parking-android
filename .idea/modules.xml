@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ParkingLots.iml" filepath="$PROJECT_DIR$/ParkingLots.iml" />
+      <module fileurl="file://D:\Work\Facultate\Sem 5\Mobile\AndroidStudio\AndroidParkingLab7\parking-android\ParkingLots.iml" filepath="D:\Work\Facultate\Sem 5\Mobile\AndroidStudio\AndroidParkingLab7\parking-android\ParkingLots.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\Work\Facultate\Sem 5\Mobile\AndroidStudio\AndroidParkingLab7\parking-android\app\app.iml" filepath="D:\Work\Facultate\Sem 5\Mobile\AndroidStudio\AndroidParkingLab7\parking-android\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/parking-android.iml" filepath="$PROJECT_DIR$/parking-android.iml" />
     </modules>
   </component>
 </project>

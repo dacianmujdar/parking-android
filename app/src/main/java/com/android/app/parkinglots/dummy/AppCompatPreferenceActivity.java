@@ -1,4 +1,4 @@
-package com.example.dacianmujdar.parkinglots.dummy;
+package com.android.app.parkinglots.dummy;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
