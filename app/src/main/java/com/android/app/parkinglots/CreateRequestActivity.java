@@ -31,7 +31,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-public class InputFormActivity extends AppCompatActivity {
+public class CreateRequestActivity extends AppCompatActivity {
 
     EditText mEmailET;
     EditText mCreatorNameET;
@@ -53,6 +53,7 @@ public class InputFormActivity extends AppCompatActivity {
         mCreatorNameET = (EditText) findViewById(R.id.creator_name);
         mReceiverNameET = (EditText) findViewById(R.id.receiver_name);
         mTypeS = (Spinner) findViewById(R.id.request_types);
+        // dropdown list containing the request types
         setRequestTypeSpinner();
     }
 
@@ -121,9 +122,9 @@ public class InputFormActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(InputFormActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+            builder = new AlertDialog.Builder(CreateRequestActivity.this, android.R.style.Theme_Material_Dialog_Alert);
         } else {
-            builder = new AlertDialog.Builder(InputFormActivity.this);
+            builder = new AlertDialog.Builder(CreateRequestActivity.this);
         }
         builder.setTitle("Create request")
                 .setMessage("Do you want to email this request?")
@@ -138,17 +139,17 @@ public class InputFormActivity extends AppCompatActivity {
                         i.putExtra(Intent.EXTRA_TEXT, "Hello, " + request.getRequestedFor() + "!");
                         try {
                             startActivity(Intent.createChooser(i, "Send mail..."));
-                            Toast.makeText(InputFormActivity.this, "Request sent", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateRequestActivity.this, "Request sent", Toast.LENGTH_SHORT).show();
                         } catch (android.content.ActivityNotFoundException ex) {
                             //quick little message for the user
-                            Toast.makeText(InputFormActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CreateRequestActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // do nothing
-                        Toast.makeText(InputFormActivity.this, "Request created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateRequestActivity.this, "Request created", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)

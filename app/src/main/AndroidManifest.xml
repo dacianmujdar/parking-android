@@ -31,7 +31,7 @@
                 android:value="com.android.app.parkinglots.ParkingLotListActivity" />
         </activity>
         <activity
-            android:name=".InputFormActivity"
+            android:name=".CreateRequestActivity"
             android:label="@string/title_activity_input_form" />
         <activity
             android:name=".LoginActivity"

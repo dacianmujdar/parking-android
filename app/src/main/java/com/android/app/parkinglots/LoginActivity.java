@@ -46,6 +46,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Volley library for networking
+    // Listener( callback - when the request ended) - String awaited
+    // ErrorListener( server error)
+    // queue -> async requests queue
     private void performLogIn(final View view) {
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest putRequest = new StringRequest(com.android.volley.Request.Method.POST, Network.URL + "oauth2/token/",

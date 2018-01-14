@@ -39,6 +39,13 @@ import java.util.Map;
  * lead to a {@link ParkingLotDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
+ *
+ *
+ * Master detail flow when the app was created.
+ * Model
+ * List -> type: RecyclerView, containing cells
+ * The whole list is registered for a context menu
+ * The Adapter links the model with the view
  */
 public class ParkingLotListActivity extends AppCompatActivity {
 
@@ -59,22 +66,30 @@ public class ParkingLotListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Start the email input activity
                 Context context = view.getContext();
-                Intent intent = new Intent(context, InputFormActivity.class);
+                Intent intent = new Intent(context, CreateRequestActivity.class);
                 context.startActivity(intent);
             }
         });
         View recyclerView = findViewById(R.id.parkinglot_list);
         assert recyclerView != null;
+        // here the whole parking info is fetched from local storage
         data = Parking.getInstance(this);
+        // get only the requests data
         requests = data.getRequests();
+        // get the parking data from the server and override it.
+        // If the data isn't fetched successfully, then the view displays the data that was fetched from local storage.
         getDataFromAPI();
         setupRecyclerView((RecyclerView) recyclerView);
         registerForContextMenu((RecyclerView) recyclerView);
     }
 
 
+    /**
+     * Get the parking data from the server.
+     */
     private void getDataFromAPI() {
         RequestQueue queue = Volley.newRequestQueue(this);
+        // here the parking info is fetched from the server
         StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, Network.URL + "parking/",
                 new Response.Listener<String>() {
                     @Override
@@ -176,6 +191,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
         refreshDataOnAdapter();
     }
 
+    // the data is saved into local storage on pause
     @Override
     protected void onPause() {
         super.onPause();
@@ -222,6 +238,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
             return new ViewHolder(view);
         }
 
+        // this is the concrete adapter, where the model is linked with the UI
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mTypeView.setText(mValues.get(position).getType());
@@ -238,6 +255,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
             return mValues.size();
         }
 
+        // this represents a cell in the list
         class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
             final TextView mTypeView;

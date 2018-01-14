@@ -1,7 +1,4 @@
 package com.android.app.parkinglots.dummy;
-/**
- * Created by dacianmujdar on 11/6/17.
- */
 
 /**
  * A dummy item representing a parking lot.
