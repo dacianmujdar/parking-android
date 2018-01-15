@@ -2,6 +2,9 @@ package com.android.app.parkinglots;
 
 import com.google.gson.Gson;
 
+import com.android.app.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.Parking;
+import com.android.app.parkinglots.dummy.RequestType;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -9,9 +12,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.android.app.parkinglots.dummy.OAuth;
-import com.android.app.parkinglots.dummy.Parking;
-import com.android.app.parkinglots.dummy.RequestType;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -70,6 +70,8 @@ public class CreateRequestActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         com.android.app.parkinglots.dummy.Request request = gson.fromJson(response, com.android.app.parkinglots.dummy.Request.class);
                         sendEmailTask(request);
+                        // add request to local storage as well
+                        Parking.getInstance(CreateRequestActivity.this).addNewRequest(request);
                     }
                 },
                 new Response.ErrorListener() {
@@ -119,7 +121,6 @@ public class CreateRequestActivity extends AppCompatActivity {
 
     private void sendEmailTask(final com.android.app.parkinglots.dummy.Request request) {
         final String email = mEmailET.getText().toString();
-
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder = new AlertDialog.Builder(CreateRequestActivity.this, android.R.style.Theme_Material_Dialog_Alert);
@@ -154,7 +155,6 @@ public class CreateRequestActivity extends AppCompatActivity {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-
     }
 }
 
