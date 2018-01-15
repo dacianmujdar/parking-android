@@ -46,8 +46,19 @@ public class LoginActivity extends AppCompatActivity implements Observer {
         });
         // start the network observer
         NetworkObserver runnable = NetworkObserver.getInstance(this);
-        runnable.registerObserver(this);
         new Thread(runnable).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NetworkObserver.getInstance(this).registerObserver(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        NetworkObserver.getInstance(this).removeObserver(this);
     }
 
     // Volley library for networking

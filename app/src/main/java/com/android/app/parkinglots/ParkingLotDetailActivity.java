@@ -260,10 +260,22 @@ public class ParkingLotDetailActivity extends AppCompatActivity implements Obser
 
     private void handleOfflineMode() {
         Toast.makeText(ParkingLotDetailActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
-        disableEditMode();
+        this.finish();
     }
 
     private void handleOnlineMode() {
         //Toast.makeText(LoginActivity.this, "You are back online!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NetworkObserver.getInstance(this).registerObserver(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        NetworkObserver.getInstance(this).removeObserver(this);
     }
 }

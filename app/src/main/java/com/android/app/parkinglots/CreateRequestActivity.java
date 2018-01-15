@@ -174,11 +174,31 @@ public class CreateRequestActivity extends AppCompatActivity implements Observer
     private void handleOfflineMode() {
         Toast.makeText(CreateRequestActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
         mSendEmail.setEnabled(false);
+        mTypeS.setEnabled(false);
+        mReceiverNameET.setEnabled(false);
+        mCreatorNameET.setEnabled(false);
+        mEmailET.setEnabled(false);
     }
 
     private void handleOnlineMode() {
         //Toast.makeText(LoginActivity.this, "You are back online!", Toast.LENGTH_SHORT).show();
         mSendEmail.setEnabled(true);
+        mTypeS.setEnabled(true);
+        mReceiverNameET.setEnabled(true);
+        mCreatorNameET.setEnabled(true);
+        mEmailET.setEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NetworkObserver.getInstance(this).registerObserver(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        NetworkObserver.getInstance(this).removeObserver(this);
     }
 }
 

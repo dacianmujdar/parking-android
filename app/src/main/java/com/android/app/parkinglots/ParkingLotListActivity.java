@@ -54,16 +54,20 @@ public class ParkingLotListActivity extends AppCompatActivity implements Observe
     private SimpleItemRecyclerViewAdapter adapter;
     private View recyclerView;
     private boolean is_online;
+    private FloatingActionButton emailInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         is_online = Utils.isNetworkConnected(this);
+        if (!is_online) {
+            handleOfflineMode();
+        }
         setContentView(R.layout.activity_parkinglot_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-        FloatingActionButton emailInput = (FloatingActionButton) findViewById(R.id.fab);
+        emailInput = (FloatingActionButton) findViewById(R.id.fab);
         emailInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,8 +76,6 @@ public class ParkingLotListActivity extends AppCompatActivity implements Observe
                     Context context = view.getContext();
                     Intent intent = new Intent(context, CreateRequestActivity.class);
                     context.startActivity(intent);
-                } else {
-                    Toast.makeText(ParkingLotListActivity.this, "You are offline and cannot create requests! Please try again later!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -199,6 +201,11 @@ public class ParkingLotListActivity extends AppCompatActivity implements Observe
     protected void onResume() {
         super.onResume();
         refreshDataOnAdapter();
+        NetworkObserver.getInstance(this).registerObserver(this);
+        is_online = Utils.isNetworkConnected(this);
+        if (!is_online) {
+            handleOfflineMode();
+        }
     }
 
     // the data is saved into local storage on pause
@@ -206,6 +213,7 @@ public class ParkingLotListActivity extends AppCompatActivity implements Observe
     protected void onPause() {
         super.onPause();
         Parking.storeDataIntoPersistance(this);
+        NetworkObserver.getInstance(this).removeObserver(this);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -230,10 +238,14 @@ public class ParkingLotListActivity extends AppCompatActivity implements Observe
     private void handleOfflineMode() {
         Toast.makeText(ParkingLotListActivity.this, "You are offline! You can see the data but you can't make operations!", Toast.LENGTH_SHORT).show();
         is_online = false;
+        recyclerView.setAlpha((float) 0.4);
+        emailInput.setAlpha((float) 0.4);
     }
 
     private void handleOnlineMode() {
         is_online = true;
+        recyclerView.setAlpha((float) 1);
+        emailInput.setAlpha((float) 1);
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -251,8 +263,6 @@ public class ParkingLotListActivity extends AppCompatActivity implements Observe
                     Intent intent = new Intent(context, ParkingLotDetailActivity.class);
                     intent.putExtra(ParkingLotDetailActivity.ARG_ITEM_ID, item.getId());
                     context.startActivity(intent);
-                } else {
-                    Toast.makeText(view.getContext(), "You are offline! Restore the internet connection and try again!", Toast.LENGTH_LONG).show();
                 }
             }
         };
