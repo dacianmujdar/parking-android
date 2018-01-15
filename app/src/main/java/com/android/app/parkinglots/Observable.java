@@ -8,5 +8,5 @@ public interface Observable {
 
     void registerObserver(Observer observable);
     void removeObserver(Observer observable);
-    void notifyObservers();
+    void notifyObservers(boolean value);
 }

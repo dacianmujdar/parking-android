@@ -102,11 +102,29 @@ public class LoginActivity extends AppCompatActivity implements Observer {
     }
 
     @Override
-    public void update() {
+    public void update(final boolean is_connected) {
         LoginActivity.this.runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(LoginActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
+                if (is_connected) {
+                    LoginActivity.this.handleOnlineMode();
+                } else {
+                    LoginActivity.this.handleOfflineMode();
+                }
             }
         });
+    }
+
+    private void handleOfflineMode() {
+        Toast.makeText(LoginActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
+        mLogInButton.setEnabled(false);
+        mEmailET.setEnabled(false);
+        mPasswordET.setEnabled(false);
+    }
+
+    private void handleOnlineMode() {
+        //Toast.makeText(LoginActivity.this, "You are back online!", Toast.LENGTH_SHORT).show();
+        mLogInButton.setEnabled(true);
+        mEmailET.setEnabled(true);
+        mPasswordET.setEnabled(true);
     }
 }

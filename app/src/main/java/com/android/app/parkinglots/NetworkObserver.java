@@ -41,10 +41,10 @@ public class NetworkObserver implements Observable, Runnable {
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(boolean value) {
         // notify all observers
         for (Observer obs : observerList) {
-            obs.update();
+            obs.update(value);
         }
     }
 
@@ -52,8 +52,9 @@ public class NetworkObserver implements Observable, Runnable {
     public void run() {
         while (true) {
             Log.d("NetworkStatus", "Checking Network Status");
-            if (!Utils.isNetworkConnected(mContext)) {
-                notifyObservers();
+            Boolean is_connected = Utils.isNetworkConnected(mContext);
+            notifyObservers(is_connected);
+            if (is_connected) {
                 Log.d("NetworkStatus", "Network Connection is established");
             } else {
                 Log.d("NetworkStatus", "Not connected to network");
