@@ -2,12 +2,12 @@ package com.android.app.parkinglots;
 
 import com.google.gson.Gson;
 
+import com.android.app.parkinglots.dummy.OAuth;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.android.app.parkinglots.dummy.OAuth;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements Observer {
 
     private static Map<String, String> users;
     private EditText mEmailET;
@@ -44,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
                 performLogIn(view);
             }
         });
+        // start the network observer
+        NetworkObserver runnable = NetworkObserver.getInstance(this);
+        runnable.registerObserver(this);
+        new Thread(runnable).start();
     }
 
     // Volley library for networking
@@ -52,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     // queue -> async requests queue
     private void performLogIn(final View view) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest putRequest = new StringRequest(com.android.volley.Request.Method.POST, Network.URL + "oauth2/token/",
+        StringRequest putRequest = new StringRequest(com.android.volley.Request.Method.POST, NetworkObserver.URL + "oauth2/token/",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -97,4 +101,12 @@ public class LoginActivity extends AppCompatActivity {
         return users.containsKey(email) && users.get(email).equals(pass);
     }
 
+    @Override
+    public void update() {
+        LoginActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(LoginActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

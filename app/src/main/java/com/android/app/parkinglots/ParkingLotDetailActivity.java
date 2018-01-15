@@ -169,7 +169,7 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
 
     private void updateRequestonAPI() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest putRequest = new StringRequest(com.android.volley.Request.Method.PATCH, Network.URL + "requests/" + mRequest.getId() + "/",
+        StringRequest putRequest = new StringRequest(com.android.volley.Request.Method.PATCH, NetworkObserver.URL + "requests/" + mRequest.getId() + "/",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

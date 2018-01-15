@@ -61,7 +61,7 @@ public class CreateRequestActivity extends AppCompatActivity {
         final String creator_name = mCreatorNameET.getText().toString();
         final String receiver_name = mReceiverNameET.getText().toString();
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest postRequest = new StringRequest(Request.Method.POST, Network.URL + "requests/",
+        StringRequest postRequest = new StringRequest(Request.Method.POST, NetworkObserver.URL + "requests/",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

@@ -90,7 +90,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
     private void getDataFromAPI() {
         RequestQueue queue = Volley.newRequestQueue(this);
         // here the parking info is fetched from the server
-        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, Network.URL + "parking/",
+        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.GET, NetworkObserver.URL + "parking/",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(final String response) {
@@ -133,7 +133,7 @@ public class ParkingLotListActivity extends AppCompatActivity {
 
     private void removeRequest(final Request request) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest dr = new StringRequest(com.android.volley.Request.Method.DELETE, Network.URL + "/requests/" + request
+        StringRequest dr = new StringRequest(com.android.volley.Request.Method.DELETE, NetworkObserver.URL + "/requests/" + request
                 .getId(),
                 new Response.Listener<String>() {
                     @Override
