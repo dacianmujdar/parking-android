@@ -31,18 +31,19 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-public class CreateRequestActivity extends AppCompatActivity {
+public class CreateRequestActivity extends AppCompatActivity implements Observer {
 
     EditText mEmailET;
     EditText mCreatorNameET;
     EditText mReceiverNameET;
     Spinner mTypeS;
+    Button mSendEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_form);
-        Button mSendEmail = (Button) findViewById(R.id.email_send_email_button);
+        mSendEmail = (Button) findViewById(R.id.email_send_email_button);
         mSendEmail.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,6 +156,29 @@ public class CreateRequestActivity extends AppCompatActivity {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    public void update(final boolean is_connected) {
+        CreateRequestActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                if (is_connected) {
+                    CreateRequestActivity.this.handleOnlineMode();
+                } else {
+                    CreateRequestActivity.this.handleOfflineMode();
+                }
+            }
+        });
+    }
+
+    private void handleOfflineMode() {
+        Toast.makeText(CreateRequestActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
+        mSendEmail.setEnabled(false);
+    }
+
+    private void handleOnlineMode() {
+        //Toast.makeText(LoginActivity.this, "You are back online!", Toast.LENGTH_SHORT).show();
+        mSendEmail.setEnabled(true);
     }
 }
 

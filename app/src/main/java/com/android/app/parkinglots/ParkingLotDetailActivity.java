@@ -2,16 +2,16 @@ package com.android.app.parkinglots;
 
 import com.google.gson.Gson;
 
+import com.android.app.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.Parking;
+import com.android.app.parkinglots.dummy.Request;
+import com.android.app.parkinglots.dummy.RequestType;
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.android.app.parkinglots.dummy.OAuth;
-import com.android.app.parkinglots.dummy.Parking;
-import com.android.app.parkinglots.dummy.Request;
-import com.android.app.parkinglots.dummy.RequestType;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -42,7 +42,7 @@ import java.util.Map;
  * item details are presented side-by-side with a list of items
  * in a {@link ParkingLotListActivity}.
  */
-public class ParkingLotDetailActivity extends AppCompatActivity {
+public class ParkingLotDetailActivity extends AppCompatActivity implements Observer {
 
     public static final String ARG_ITEM_ID = "DetailItem";
     private boolean is_edit_enabled = false;
@@ -243,5 +243,27 @@ public class ParkingLotDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void update(final boolean is_connected) {
+        ParkingLotDetailActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                if (is_connected) {
+                    ParkingLotDetailActivity.this.handleOnlineMode();
+                } else {
+                    ParkingLotDetailActivity.this.handleOfflineMode();
+                }
+            }
+        });
+    }
+
+    private void handleOfflineMode() {
+        Toast.makeText(ParkingLotDetailActivity.this, "You are offline! Check internet connection and come back!", Toast.LENGTH_SHORT).show();
+        disableEditMode();
+    }
+
+    private void handleOnlineMode() {
+        //Toast.makeText(LoginActivity.this, "You are back online!", Toast.LENGTH_SHORT).show();
     }
 }

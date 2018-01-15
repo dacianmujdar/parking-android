@@ -1,14 +1,14 @@
 package com.android.app.parkinglots;
 
+import com.android.app.parkinglots.dummy.OAuth;
+import com.android.app.parkinglots.dummy.Parking;
+import com.android.app.parkinglots.dummy.Request;
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.android.app.parkinglots.dummy.OAuth;
-import com.android.app.parkinglots.dummy.Parking;
-import com.android.app.parkinglots.dummy.Request;
 
 import android.content.Context;
 import android.content.Intent;
@@ -47,15 +47,18 @@ import java.util.Map;
  * The whole list is registered for a context menu
  * The Adapter links the model with the view
  */
-public class ParkingLotListActivity extends AppCompatActivity {
+public class ParkingLotListActivity extends AppCompatActivity implements Observer {
 
     private Parking data;
     private ArrayList<Request> requests;
     private SimpleItemRecyclerViewAdapter adapter;
+    private View recyclerView;
+    private boolean is_online;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        is_online = Utils.isNetworkConnected(this);
         setContentView(R.layout.activity_parkinglot_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,13 +67,17 @@ public class ParkingLotListActivity extends AppCompatActivity {
         emailInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Start the email input activity
-                Context context = view.getContext();
-                Intent intent = new Intent(context, CreateRequestActivity.class);
-                context.startActivity(intent);
+                if (is_online) {
+                    // Start the email input activity
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, CreateRequestActivity.class);
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(ParkingLotListActivity.this, "You are offline and cannot create requests! Please try again later!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        View recyclerView = findViewById(R.id.parkinglot_list);
+        recyclerView = findViewById(R.id.parkinglot_list);
         assert recyclerView != null;
         // here the whole parking info is fetched from local storage
         data = Parking.getInstance(this);
@@ -82,7 +89,6 @@ public class ParkingLotListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
         registerForContextMenu((RecyclerView) recyclerView);
     }
-
 
     /**
      * Get the parking data from the server.
@@ -132,6 +138,10 @@ public class ParkingLotListActivity extends AppCompatActivity {
     }
 
     private void removeRequest(final Request request) {
+        if (!is_online) {
+            Toast.makeText(this, "You cannot perform this operation offline! Try again later", Toast.LENGTH_LONG).show();
+            return;
+        }
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest dr = new StringRequest(com.android.volley.Request.Method.DELETE, NetworkObserver.URL + "/requests/" + request
                 .getId(),
@@ -203,6 +213,29 @@ public class ParkingLotListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    // for observer - the method that is executed for notification (on background thread)
+    @Override
+    public void update(final boolean is_connected) {
+        ParkingLotListActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                if (is_connected) {
+                    ParkingLotListActivity.this.handleOnlineMode();
+                } else {
+                    ParkingLotListActivity.this.handleOfflineMode();
+                }
+            }
+        });
+    }
+
+    private void handleOfflineMode() {
+        Toast.makeText(ParkingLotListActivity.this, "You are offline! You can see the data but you can't make operations!", Toast.LENGTH_SHORT).show();
+        is_online = false;
+    }
+
+    private void handleOnlineMode() {
+        is_online = true;
+    }
+
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
@@ -212,11 +245,15 @@ public class ParkingLotListActivity extends AppCompatActivity {
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Request item = (Request) view.getTag();
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ParkingLotDetailActivity.class);
-                intent.putExtra(ParkingLotDetailActivity.ARG_ITEM_ID, item.getId());
-                context.startActivity(intent);
+                if (Utils.isNetworkConnected(view.getContext())) {
+                    Request item = (Request) view.getTag();
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, ParkingLotDetailActivity.class);
+                    intent.putExtra(ParkingLotDetailActivity.ARG_ITEM_ID, item.getId());
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(view.getContext(), "You are offline! Restore the internet connection and try again!", Toast.LENGTH_LONG).show();
+                }
             }
         };
 
